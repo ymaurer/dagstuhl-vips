@@ -69,10 +69,8 @@ def dowork(args):
                             output_textline(textline)
                             textline = reset_textline()
 
-
-
-parser = ArgumentParser(description='parse a tsv NER file and transform it into tokenized sequence')
-parser.add_argument('--dataset', action='store', help='sonar: SONAR-type tagging with I-PER / B-PER in column 2 and NIL / Qxxxx in column 8, hipe2020')
+parser = ArgumentParser(description='parse a tsv NER file and transform it into tokenized sequence', epilog='Sample output: {"tokens": ["Verantwortlicher", "Herausgeber", ":", "Dr", ".", "H", ".", "Klee", "."], "ner_tags": ["O", "O", "O", "O", "O", "B-HIDDEN", "I-HIDDEN", "I-HIDDEN", "O"]}')
+parser.add_argument('--dataset', action='store', choices=['sonar','hipe2020'], help="sonar or hipe2020 style tagging")
 parser.add_argument('file', nargs='*', help='tsv tagged file(s)')
 args = parser.parse_args()
 dowork(args)
