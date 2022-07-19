@@ -22,6 +22,20 @@ def class_sonar(col):
         res += 2
     return res
 
+def class_hipe2020(col):
+    if col[1] == 'B-pers' or col[1] == 'I-pers':
+        if col[5] == 'B-comp.name' or col[5] == 'O':
+            if col[7] == 'NIL':
+                return 3
+            else:
+                return 1
+        else:
+            if col[7] == 'NIL':
+                return 4
+            else:
+                return 2
+    return 0
+
 def dowork(args):
     for f in args.file:
         with open(f,"r") as fil:
@@ -34,8 +48,10 @@ def dowork(args):
                     else:
                         col = line.split()
                         textline['tokens'].append(col[0])
-                        if args.sonar:
+                        if args.dataset == 'sonar':
                             textline['ner_tags'].append(class_sonar(col))
+                        if args.dataset == 'hipe2020':
+                            textline['ner_tags'].append(class_hipe2020(col))
                         if col[9]=='EndOfSentence':
                             output_textline(textline)
                             textline = reset_textline()
@@ -43,7 +59,7 @@ def dowork(args):
 
 
 parser = ArgumentParser(description='parse a tsv NER file and transform it into tokenized sequence')
-parser.add_argument('--sonar', action='store_true', help='SONAR-type tagging with I-PER / B-PER in column 2 and NIL / Qxxxx in column 8')
+parser.add_argument('--dataset', action='store', help='sonar: SONAR-type tagging with I-PER / B-PER in column 2 and NIL / Qxxxx in column 8, hipe2020')
 parser.add_argument('file', nargs='*', help='tsv tagged file(s)')
 args = parser.parse_args()
 dowork(args)
