@@ -14,8 +14,6 @@ def dowork(args):
                         break
                 if found and args.onlyner:
                     print(line.strip())
-                else:
-                    print(line.strip())
 
 parser = ArgumentParser(description='parse a jsonl tokens / ner_tags file and filter based on presence of NER tags')
 parser.add_argument('--onlyner', action='store_true', help='filter only lines that contain at least one named entity')
