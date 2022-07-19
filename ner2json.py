@@ -2,6 +2,8 @@
 from argparse import ArgumentParser
 import json
 
+hipe_inside_entity = False
+
 def output_textline(textline):
     if len(textline['tokens']) > 1:
         print(json.dumps(textline))
@@ -26,17 +28,25 @@ def class_sonar(col):
     return 'O'
 
 def class_hipe2020(col):
+    global hipe_inside_entity
+
     if col[1] == 'B-pers':
-        if col[5] == 'B-comp.name' or col[5] == 'O':
-            if col[7] == 'NIL':
-                return 'B-HIDDEN'
+        hipe_inside_entity = False
+    
+    if col[1] == 'B-pers' or col[1] == 'I-pers':
+        if col[5].endswith('-comp.name') or col[5] == 'O': 
+            retval = ''
+            if hipe_inside_entity:
+                retval = 'I-'
             else:
-                return 'B-PUBLIC'
-    elif col[1] == 'I-pers':
-        if col[7] == 'NIL':
-            return 'I-HIDDEN'
-        else:
-            return 'I-PUBLIC'
+                retval = 'B-'
+            hipe_inside_entity = True
+            if col[7] == 'NIL':
+                return retval + 'HIDDEN'
+            else:
+                return retval + 'PUBLIC'
+
+    hipe_inside_entity = False
     return 'O'
 
 def dowork(args):
@@ -55,7 +65,7 @@ def dowork(args):
                             textline['ner_tags'].append(class_sonar(col))
                         if args.dataset == 'hipe2020':
                             textline['ner_tags'].append(class_hipe2020(col))
-                        if col[9]=='EndOfSentence':
+                        if col[9].find('EndOfSentence') != -1:
                             output_textline(textline)
                             textline = reset_textline()
 
