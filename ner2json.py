@@ -23,17 +23,17 @@ def class_sonar(col):
     return res
 
 def class_hipe2020(col):
-    if col[1] == 'B-pers' or col[1] == 'I-pers':
+    if col[1] == 'B-pers':
         if col[5] == 'B-comp.name' or col[5] == 'O':
             if col[7] == 'NIL':
                 return 3
             else:
                 return 1
+    elif col[1] == 'I-pers':
+        if col[7] == 'NIL':
+            return 4
         else:
-            if col[7] == 'NIL':
-                return 4
-            else:
-                return 2
+            return 2
     return 0
 
 def dowork(args):
