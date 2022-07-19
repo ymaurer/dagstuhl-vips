@@ -9,7 +9,7 @@ def dowork(args):
                 l = json.loads(line)
                 found = False
                 for i in l['ner_tags']:
-                    if i > 0:
+                    if i != 'O':
                         found=True
                         break
                 if found and args.onlyner:

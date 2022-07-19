@@ -13,28 +13,31 @@ def reset_textline():
     return textline
 
 def class_sonar(col):
-    res = 0
     if col[1] == 'B-PER':
-        res = 1
+        if col[7] == 'NIL':
+            return 'B-HIDDEN'
+        else:
+            return 'B-PUBLIC'
     elif col[1] == 'I-PER':
-        res = 2
-    if col[7] == 'NIL':
-        res += 2
-    return res
+        if col[7] == 'NIL':
+            return 'I-HIDDEN'
+        else:
+            return 'I-PUBLIC'
+    return 'O'
 
 def class_hipe2020(col):
     if col[1] == 'B-pers':
         if col[5] == 'B-comp.name' or col[5] == 'O':
             if col[7] == 'NIL':
-                return 3
+                return 'B-HIDDEN'
             else:
-                return 1
+                return 'B-PUBLIC'
     elif col[1] == 'I-pers':
         if col[7] == 'NIL':
-            return 4
+            return 'I-HIDDEN'
         else:
-            return 2
-    return 0
+            return 'I-PUBLIC'
+    return 'O'
 
 def dowork(args):
     for f in args.file:
