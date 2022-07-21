@@ -41,6 +41,77 @@ optional arguments:
   --onlyner   filter only lines that contain at least one named entity
 ``` 
 
+## extract-alto-blocks.py
+```
+usage: extract-alto-blocks.py [-h] [file ...]
+
+Parse METS/ALTO files and extract textblocks from ALTO with coordinates
+
+positional arguments:
+  file        mets files
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+Its output format is the following:
+```json
+{
+  "id": "https://persist.lu/ark:70795/7zc8m0/pages/1/textblock/ART2-1",
+  "tokens": [
+    "L’Allemagne",
+    "et",
+    "le",
+    "désarmement"
+  ],
+  "token_coords": [
+    {
+      "x": "214",
+      "y": "886",
+      "w": "511",
+      "h": "66"
+    },
+    {
+      "x": "767",
+      "y": "882",
+      "w": "83",
+      "h": "58"
+    },
+    {
+      "x": "893",
+      "y": "882",
+      "w": "71",
+      "h": "58"
+    },
+    {
+      "x": "1004",
+      "y": "881",
+      "w": "587",
+      "h": "59"
+    }
+  ],
+  "page": 1,
+  "page_height": "4957",
+  "page_width": "3478",
+  "ARK": "https://persist.lu/ark:70795/7zc8m0",
+  "paperid": "indeplux",
+  "date": "1928-01-01",
+  "numpages": 4
+}
+```
+## splittextblocks.py
+```
+usage: splittextblocks.py [-h] [--lang LANG] [file ...]
+
+Parse textblock jsonl files and split them into sentences using spacy
+
+positional arguments:
+  file         jsonl files
+
+optional arguments:
+  -h, --help   show this help message and exit
+  --lang LANG  Language (default=fr)
+```
+
 ## Label encoding
  - 0: Outside of PERSON
  - 1: B-PUBLIC Begin of public person mention with a wikidata QID
