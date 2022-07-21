@@ -111,7 +111,13 @@ optional arguments:
   -h, --help   show this help message and exit
   --lang LANG  Language (default=fr)
 ```
-
+The output format is the following:
+```json
+{
+  "id": "https://persist.lu/ark:70795/7zc8m0/pages/1/textblock/ART2-1/position/0",
+  "text": "L’Allemagne et le désarmement"
+}
+```
 ## Label encoding
  - 0: Outside of PERSON
  - 1: B-PUBLIC Begin of public person mention with a wikidata QID
