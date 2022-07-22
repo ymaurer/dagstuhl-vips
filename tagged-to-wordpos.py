@@ -58,7 +58,7 @@ def read_sentences(f):
                         out['coord_x'] = pos['x']
                         out['coord_y'] = pos['y']
                         out['diag_pos_page'] = project(pos)
-                        out['diag_pos_issue'] = out['diag_pos_page'] / int(tb['numpages'])
+                        out['diag_pos_issue'] = out['diag_pos_page'] / int(tb['numpages']) + (int(tb['page']-1)/int(tb['numpages']))
                         out['text'] = tb['tokens'][i]
                         out['ne_type'] = j['tags'][entity_index]
                         print(json.dumps(out))
