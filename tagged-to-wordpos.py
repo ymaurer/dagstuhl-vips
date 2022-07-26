@@ -10,7 +10,6 @@ def read_textblocks(f):
     with open(f, 'r') as fil:
         for line in fil:
             j = json.loads(line)
-            txt = ' '.join(j['tokens'])
             textblocks[j['id']] = j
 
 def centroid(box):
@@ -36,24 +35,31 @@ def read_sentences(f):
                 'page': tb['page'],
                 'numpages': tb['numpages'],
             }
-            counter = 0
+            token_length = 0
             i = 0
             # skip to the first token of the textblock for this sentence
-            while counter < offset and i < len(tb['tokens']):
-                #print(counter, offset, tb['tokens'][i])
-                counter += len(tb['tokens'][i]) + 1
+            while token_length < offset and i < len(tb['tokens']):
+                token_length += len(tb['tokens'][i]) + 1
                 i += 1
-            #print(j['id'], counter)
+            # check if we ended up in the middle of a token. This can happen if spacy split a token into distinct sentences
+            if token_length > offset:
+                # go back one token
+                i = i - 1
+                # take off last token and space
+                token_length -= len(tb['tokens'][i]) + 1
+                # split last token (HACK, do not do this)
+                left_token = offset - token_length
+                tb['tokens'][i] = tb['tokens'][i][left_token:]
+                token_length += left_token
             # output the sentence and its tokens
-            #print('trying to output:')
-            #print(j['text'])
             slen = 0
             entity_index = 0
             while slen < len(j['text']) and entity_index < len(j['pos']):
-                #print(i, tb['tokens'][i])
+                # Check whether we are on a person
                 if slen >= j['pos'][entity_index][0]:
+                    # only take into account beginning of person named entities
                     if j['tags'][entity_index].startswith('B-'):
-                        # print(tb['tokens'][i], tb['token_coords'][i], entity_index, j['tags'][entity_index])
+                        # calculate coordinates of the center and project it against the diagonal
                         pos = rescale(centroid(tb['token_coords'][i]), tb['page_width'], tb['page_height'])
                         out['coord_x'] = pos['x']
                         out['coord_y'] = pos['y']
@@ -70,7 +76,6 @@ def read_sentences(f):
 def dowork(args):
     read_textblocks(args.file[0])
     read_sentences(args.file[1])
-
 
 parser = ArgumentParser(description='Parse textblock jsonl files and combine them using the tagged words to generate named-entity based jsonl')
 parser.add_argument('file', nargs=2, help='textblock jsonl & tagged sentence jsonl')
