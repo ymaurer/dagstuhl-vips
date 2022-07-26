@@ -3,16 +3,19 @@ programs and data from the Dagstuhl seminar on Computational Approaches for digi
 
 ## ner2json.py
 ```
-usage: ner2json.py [-h] [--sonar] [file ...]
+usage: ner2json.py [-h] [--dataset {sonar,hipe2020}] [file ...]
 
 parse a tsv NER file and transform it into tokenized sequence
 
 positional arguments:
-  file        tsv tagged file(s)
+  file                  tsv tagged file(s)
 
 optional arguments:
-  -h, --help  show this help message and exit
-  --sonar     SONAR-type tagging with I-PER / B-PER in column 2 and NIL / Qxxxx in column 8
+  -h, --help            show this help message and exit
+  --dataset {sonar,hipe2020}
+                        sonar or hipe2020 style tagging
+
+Sample output: {"tokens": ["Verantwortlicher", "Herausgeber", ":", "Dr", ".", "H", ".", "Klee", "."], "ner_tags": ["O", "O", "O", "O", "O", "B-HIDDEN", "I-HIDDEN", "I-HIDDEN", "O"]}
 ```
 
 ## ner-stats.py
@@ -29,16 +32,17 @@ optional arguments:
 ```
 ## filter-ner.py
 ```
-usage: filter-ner.py [-h] [--onlyner] [file ...]
+usage: filter-ner.py [-h] [--onlyner] [--maskne MASKNE] [file ...]
 
 parse a jsonl tokens / ner_tags file and filter based on presence of NER tags
 
 positional arguments:
-  file        jsonl files
+  file             jsonl files
 
 optional arguments:
-  -h, --help  show this help message and exit
-  --onlyner   filter only lines that contain at least one named entity
+  -h, --help       show this help message and exit
+  --onlyner        filter only lines that contain at least one named entity
+  --maskne MASKNE  replace NER tokens with a fixed masking token
 ``` 
 
 ## extract-alto-blocks.py
@@ -118,6 +122,37 @@ The output format is the following:
   "text": "L’Allemagne et le désarmement"
 }
 ```
+
+## tagged-to-wordpos.py
+```
+usage: tagged-to-wordpos.py [-h] file file
+
+Parse textblock jsonl files and combine them using the tagged words to generate named-entity based jsonl
+
+positional arguments:
+  file        textblock jsonl & tagged sentence jsonl
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+This outputs the coordinates of the first token of the named entities that were identified in a format that allows for easy use in Kibana.
+
+The output format is the following:
+```json
+{
+  "paperid": "indeplux",
+  "date": "1872-01-01",
+  "page": 2,
+  "numpages": 4,
+  "coord_x": 0.20330679730557258,
+  "coord_y": 0.4610974610974611,
+  "diag_pos_page": 0.5763697851219448,
+  "diag_pos_issue": 0.39409244628048623,
+  "text": "Victor",
+  "ne_type": "B-HIDDEN"
+}
+```
+
 ## Label encoding
  - 0: Outside of PERSON
  - 1: B-PUBLIC Begin of public person mention with a wikidata QID
